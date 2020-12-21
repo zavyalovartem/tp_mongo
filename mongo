@@ -1,0 +1,18 @@
+import pymongo
+import sqlite3
+
+
+netflix_conn = sqlite3.connect('netflix.sqlite')
+client = pymongo.MongoClient('mongodb://st:askldjwq@185.93.109.237:27019/?authSource=goscatalog')
+db = client.goscatalog
+myc = db.mongo_homework_AZ
+with netflix_conn:
+    cursor = netflix_conn.cursor()
+    cursor.execute("select * from netflix_titles")
+    for row in cursor:
+        show_id, type, title, director, cast, country, date_added, release_year, rating, duration, genres, desc = row
+        doc = {"show_id": show_id, "type": type, "title": title, "director": director,
+                             "cast": cast, "country": country, "date_added": date_added,
+                             "release_year": release_year, "rating": rating, "duration": duration,
+                             "genres": genres, "description": desc}
+        res = myc.insert_one(doc)
